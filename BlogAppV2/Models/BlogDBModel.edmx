@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="blog_dbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Categoria">
+          <Key>
+            <PropertyRef Name="CodCategoria" />
+          </Key>
+          <Property Name="CodCategoria" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Contiene">
+          <Key>
+            <PropertyRef Name="CodContiene" />
+          </Key>
+          <Property Name="CodContiene" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CodCategoria" Type="int" Nullable="false" />
+          <Property Name="CodPost" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Post">
+          <Key>
+            <PropertyRef Name="CodPost" />
+          </Key>
+          <Property Name="CodPost" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CodUsuario" Type="int" Nullable="false" />
+          <Property Name="Contenido" Type="varchar" MaxLength="3000" Nullable="false" />
+          <Property Name="Titulo" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="FechaIngreso" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="CodUsuario" />
+          </Key>
+          <Property Name="CodUsuario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Contiene_Categoria">
+          <End Role="Categoria" Type="Self.Categoria" Multiplicity="1" />
+          <End Role="Contiene" Type="Self.Contiene" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categoria">
+              <PropertyRef Name="CodCategoria" />
+            </Principal>
+            <Dependent Role="Contiene">
+              <PropertyRef Name="CodCategoria" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_contiene_contiene2_post">
+          <End Role="Post" Type="Self.Post" Multiplicity="1" />
+          <End Role="Contiene" Type="Self.Contiene" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Post">
+              <PropertyRef Name="CodPost" />
+            </Principal>
+            <Dependent Role="Contiene">
+              <PropertyRef Name="CodPost" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_post_genera_usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
+          <End Role="Post" Type="Self.Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="CodUsuario" />
+            </Principal>
+            <Dependent Role="Post">
+              <PropertyRef Name="CodUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="blog_dbModelStoreContainer">
+          <EntitySet Name="Categoria" EntityType="Self.Categoria" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Contiene" EntityType="Self.Contiene" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Post" EntityType="Self.Post" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Contiene_Categoria" Association="Self.FK_Contiene_Categoria">
+            <End Role="Categoria" EntitySet="Categoria" />
+            <End Role="Contiene" EntitySet="Contiene" />
+          </AssociationSet>
+          <AssociationSet Name="fk_contiene_contiene2_post" Association="Self.fk_contiene_contiene2_post">
+            <End Role="Post" EntitySet="Post" />
+            <End Role="Contiene" EntitySet="Contiene" />
+          </AssociationSet>
+          <AssociationSet Name="fk_post_genera_usuario" Association="Self.fk_post_genera_usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="Post" EntitySet="Post" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="blog_dbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Categoria">
+          <Key>
+            <PropertyRef Name="CodCategoria" />
+          </Key>
+          <Property Name="CodCategoria" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Contiene" Relationship="blog_dbModel.FK_Contiene_Categoria" FromRole="Categoria" ToRole="Contiene" />
+        </EntityType>
+        <EntityType Name="Contiene">
+          <Key>
+            <PropertyRef Name="CodContiene" />
+          </Key>
+          <Property Name="CodContiene" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CodCategoria" Type="Int32" Nullable="false" />
+          <Property Name="CodPost" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Post" Relationship="Self.fk_contiene_contiene2_post" FromRole="Contiene" ToRole="Post" />
+          <NavigationProperty Name="Categoria" Relationship="blog_dbModel.FK_Contiene_Categoria" FromRole="Contiene" ToRole="Categoria" />
+        </EntityType>
+        <EntityType Name="Post">
+          <Key>
+            <PropertyRef Name="CodPost" />
+          </Key>
+          <Property Name="CodPost" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CodUsuario" Type="Int32" Nullable="false" />
+          <Property Name="Contenido" Type="String" MaxLength="3000" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Titulo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FechaIngreso" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Contiene" Relationship="Self.fk_contiene_contiene2_post" FromRole="Post" ToRole="Contiene" />
+          <NavigationProperty Name="Usuario" Relationship="Self.fk_post_genera_usuario" FromRole="Post" ToRole="Usuario" />
+        </EntityType>
+        <EntityType Name="Usuario">
+          <Key>
+            <PropertyRef Name="CodUsuario" />
+          </Key>
+          <Property Name="CodUsuario" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Post" Relationship="Self.fk_post_genera_usuario" FromRole="Usuario" ToRole="Post" />
+        </EntityType>
+        <Association Name="fk_contiene_contiene2_post">
+          <End Role="Post" Type="Self.Post" Multiplicity="1" />
+          <End Role="Contiene" Type="Self.Contiene" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Post">
+              <PropertyRef Name="CodPost" />
+            </Principal>
+            <Dependent Role="Contiene">
+              <PropertyRef Name="CodPost" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_post_genera_usuario">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
+          <End Role="Post" Type="Self.Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="CodUsuario" />
+            </Principal>
+            <Dependent Role="Post">
+              <PropertyRef Name="CodUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="blog_dbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categoria" EntityType="Self.Categoria" />
+          <EntitySet Name="Contiene" EntityType="Self.Contiene" />
+          <EntitySet Name="Post" EntityType="Self.Post" />
+          <EntitySet Name="Usuario" EntityType="Self.Usuario" />
+          <AssociationSet Name="fk_contiene_contiene2_post" Association="Self.fk_contiene_contiene2_post">
+            <End Role="Post" EntitySet="Post" />
+            <End Role="Contiene" EntitySet="Contiene" />
+          </AssociationSet>
+          <AssociationSet Name="fk_post_genera_usuario" Association="Self.fk_post_genera_usuario">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="Post" EntitySet="Post" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contiene_Categoria" Association="blog_dbModel.FK_Contiene_Categoria">
+            <End Role="Categoria" EntitySet="Categoria" />
+            <End Role="Contiene" EntitySet="Contiene" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="FK_Contiene_Categoria">
+          <End Type="blog_dbModel.Categoria" Role="Categoria" Multiplicity="1" />
+          <End Type="blog_dbModel.Contiene" Role="Contiene" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categoria">
+              <PropertyRef Name="CodCategoria" />
+            </Principal>
+            <Dependent Role="Contiene">
+              <PropertyRef Name="CodCategoria" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="blog_dbModelStoreContainer" CdmEntityContainer="blog_dbEntities">
+          <EntitySetMapping Name="Categoria">
+            <EntityTypeMapping TypeName="blog_dbModel.Categoria">
+              <MappingFragment StoreEntitySet="Categoria">
+                <ScalarProperty Name="CodCategoria" ColumnName="CodCategoria" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Contiene">
+            <EntityTypeMapping TypeName="blog_dbModel.Contiene">
+              <MappingFragment StoreEntitySet="Contiene">
+                <ScalarProperty Name="CodContiene" ColumnName="CodContiene" />
+                <ScalarProperty Name="CodCategoria" ColumnName="CodCategoria" />
+                <ScalarProperty Name="CodPost" ColumnName="CodPost" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Post">
+            <EntityTypeMapping TypeName="blog_dbModel.Post">
+              <MappingFragment StoreEntitySet="Post">
+                <ScalarProperty Name="CodPost" ColumnName="CodPost" />
+                <ScalarProperty Name="CodUsuario" ColumnName="CodUsuario" />
+                <ScalarProperty Name="Contenido" ColumnName="Contenido" />
+                <ScalarProperty Name="Titulo" ColumnName="Titulo" />
+                <ScalarProperty Name="FechaIngreso" ColumnName="FechaIngreso" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Usuario">
+            <EntityTypeMapping TypeName="blog_dbModel.Usuario">
+              <MappingFragment StoreEntitySet="Usuario">
+                <ScalarProperty Name="CodUsuario" ColumnName="CodUsuario" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
